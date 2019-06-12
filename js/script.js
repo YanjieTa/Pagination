@@ -17,6 +17,8 @@ FSJS project 2 - List Filter and Pagination
    scoped to that function.
 ***/
 
+const list = document.getElementsByClassName('student-item cf');
+const number = 10;
 
 
 
@@ -35,7 +37,25 @@ FSJS project 2 - List Filter and Pagination
        "invoke" the function 
 ***/
 
+function showPage(list, page) {
+  let startIndex = (page * number) - number;
+  let endIndex = page * number;
+  // hide all the student item
+  const studentList = document.getElementsByClassName('student-item cf');
 
+  for(let i = 0; i < studentList.length; i++) {
+    studentList[i].style.display = 'none';
+  }
+
+  // show 10 students each time
+
+  for(let i = startIndex; i < endIndex; i++) {
+    if(studentList[i] == undefined){
+      break;
+    }
+    studentList[i].style.display = '';
+  }
+}
 
 
 /*** 
@@ -43,7 +63,54 @@ FSJS project 2 - List Filter and Pagination
    functionality to the pagination buttons.
 ***/
 
+function appendPageLinks(list) {
 
+  // use math to calculate the number of pages are needed
+  const numberOfList = Math.ceil(list.length / 10);
+
+  // create and append a div to the div has class "page"
+  const paginationDiv = document.createElement('div');
+  paginationDiv.className = 'pagination';
+  document.querySelector('.page').appendChild(paginationDiv);
+
+  const paginationUl = document.createElement('ul');
+  paginationDiv.appendChild(paginationUl);
+
+  // use for loop to add enough li tag and a tag 
+
+  for(let i = 0; i < numberOfList; i++) {
+    const paginationLi = document.createElement('li');
+    const paginationA = document.createElement('a');
+    paginationA.textContent = `${i+1}`;
+    if(i == 0) {
+      paginationA.className = "active";
+    }
+    paginationA.setAttribute("href", "#");
+
+    // add event listenr to every a tag
+      // use the content of a tag to set the target a tag
+      // pass in the content of a tag to function showPage to show those students
+    paginationA.addEventListener('click', (event) => {
+      showPage(list, i+1);
+
+      // in the pass in function, remove the class active from all the a tag
+      const paginationAs = document.querySelectorAll('.pagination ul li a');
+      for(let i = 0; i < paginationAs.length; i++) {
+        paginationAs[i].className = "";
+      }
+      
+      // set class active to that a tag
+      event.target.className = "active";
+    });
+
+    paginationLi.appendChild(paginationA);
+    paginationUl.appendChild(paginationLi);
+  }
+
+}
+
+showPage(list, 1);
+appendPageLinks(list);
 
 
 
